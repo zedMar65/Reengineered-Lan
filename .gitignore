@@ -8,3 +8,4 @@ Scripts/*
 Include/*
 *.dll
 *.lib
+share/*
