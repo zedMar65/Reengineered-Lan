@@ -6,6 +6,7 @@ def main():
     src_ip = "0.0.0.0"
     dst_ip = "1.1.1.1"
     data = "Hello, World!"
+    packet = None
     packet = form_udp(src_port, dst_port, src_ip, dst_ip, data)
     print(packet)
 
