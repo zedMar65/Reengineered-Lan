@@ -1,5 +1,6 @@
-from scapy.all import IP, UDP, Raw, TCP, sr1, send, sniff
+from scapy.all import IP, UDP, Raw, TCP#, sr1, send, sniff
 from errors import raiseError
+from interface import sr1, send, sniff
 
 def form_udp(
     src_port: int,
@@ -34,6 +35,7 @@ class tcp_session:
     src_ip: source IP address
     dst_ip: destination IP address
     iface: network interface to use
+    mode: mode of the session, C for client, S for servers
     """
     def __init__(self, src_port: int, src_ip: str, iface: str, dst_port: int = None, dst_ip: str = None,  mode: str = "C") -> None:
         self.src_port = src_port

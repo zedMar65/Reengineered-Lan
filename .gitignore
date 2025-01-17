@@ -9,3 +9,7 @@ Include/*
 *.dll
 *.lib
 share/*
+__pycache__/*
+*.pyc
+*.pyo
+*.pyd
