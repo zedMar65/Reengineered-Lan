@@ -1,4 +1,4 @@
-from scapy.all import IP, UDP, Raw, TCP
+from scapy.all import IP, UDP, Raw, TCP, sr1, send, sniff
 from errors import raiseError
 
 def form_udp(
@@ -24,19 +24,91 @@ def form_udp(
         packet.build()  # Build the packet
         return packet  # Return the raw bytes of the packet
     except Exception as e:
-        raiseError(2)
+        raiseError(2, e)
 # managing tcp sockets, Yai!
 class tcp_session:
-    def __init__(self, src_port: int, dst_port: int, src_ip: str, dst_ip: str):
+    def __init__(self, src_port: int, dst_port: int, src_ip: str, dst_ip: str, iface: str) -> None:
         self.src_port = src_port
         self.dst_port = dst_port
         self.src_ip = src_ip
         self.dst_ip = dst_ip
         self.seq = 0
         self.ack = 0
-        self.sync()
-    def sync(self):
+        self.iface = iface
+        self.is_active = False
+        if self._sync() != 1:
+            raiseError(4)
+    
+    # usable functions, for session control
+    # activate the session
+    def reactivate(self) -> int:
+        self.seq = 0
+        self.ack = 0
+        if self._sync() != 1:
+            raiseError(4)
+        return 1
+    # close the session
+    def close(self) -> int:
+        if not self.is_active:
+            return 1
+        fin_packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="FA", seq=self.seq, ack=self.ack)
+        fin_response = sr1(fin_packet, iface=self.iface)
+        if fin_response == None:
+            raiseError(1)
+        if fin_response[TCP].flags != "A":
+            raiseError(3)
+        self.seq = fin_response.ack
+        self.ack = fin_response.seq + 1
+        fin_ack_packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="A", seq=self.seq, ack=self.ack)
+        send(fin_ack_packet, iface=self.iface)
+        self.is_active = False
+        return 1
+    def send(self, data: str) -> int:
+        if not self.is_active:
+            return 0
+        packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="PA", seq=self.seq, ack=self.ack) / Raw(data)
+        response = sr1(packet, iface=self.iface)
+        if response is None:
+            raiseError(1)
+        if response[TCP].flags != "A":
+            raiseError(3)
+        self.seq = response.ack
+        self.ack = response.seq + 1
+        return 1
+    def listen(self, timeout=None) -> str:
+        # Capture packets matching the filter
+        packet = sniff(filter="tcp", prn=None, timeout=timeout, lfilter=self._packet_filter, count=1)
+
+        if not packet:
+            return None
+        
+        self.seq = packet[TCP].ack  # Update sequence and acknowledgment numbers
+        self.ack = packet[TCP].seq + 1
+        return packet[Raw].load.decode()
+    def _packet_filter(self, pkt):
+        return (
+            IP in pkt and TCP in pkt and
+            pkt[IP].src == self.dst_ip and pkt[IP].dst == self.src_ip and
+            pkt[TCP].sport == self.dst_port and pkt[TCP].dport == self.src_port
+        )
+    # TCP handshake
+    def _sync(self) -> int:
         syn_packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="S", seq=self.seq)
-        syn_response = sr1(syn_packet) # Send the SYN packet and wait for a response
+        syn_response = sr1(syn_packet, iface = self.iface) # Send the SYN packet and wait for a response
         if syn_response is None:
-            raise Exception("No response to SYN packet")
+            raiseError(1)
+        if syn_response[TCP].flags != "SA":
+            raiseError(3)
+        self.seq = syn_response.ack
+        self.ack = syn_response.seq + 1
+        
+        ack_packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="A", seq=self.seq, ack=self.ack)
+        ack_response = sr1(ack_packet, iface=self.iface)
+        if ack_response is None:
+            raiseError(1)
+        if ack_response[TCP].flags != "A":
+            raiseError(3)
+        self.seq = ack_response.ack
+        self.ack = ack_response.seq + 1
+        self.is_active = True
+        return 1
