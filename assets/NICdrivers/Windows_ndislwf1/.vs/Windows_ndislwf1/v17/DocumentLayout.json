@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{87D4D1CF-5251-4F21-8072-9ECC626ADD91}|Windows_ndislwf1.vcxproj|C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\filter.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{87D4D1CF-5251-4F21-8072-9ECC626ADD91}|Windows_ndislwf1.vcxproj|solutionrelative:filter.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87D4D1CF-5251-4F21-8072-9ECC626ADD91}|Windows_ndislwf1.vcxproj|C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\device.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{87D4D1CF-5251-4F21-8072-9ECC626ADD91}|Windows_ndislwf1.vcxproj|solutionrelative:device.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87D4D1CF-5251-4F21-8072-9ECC626ADD91}|Windows_ndislwf1.vcxproj|C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\filter.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{87D4D1CF-5251-4F21-8072-9ECC626ADD91}|Windows_ndislwf1.vcxproj|solutionrelative:filter.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "filter.h",
+              "DocumentMoniker": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\filter.h",
+              "RelativeDocumentMoniker": "filter.h",
+              "ToolTip": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\filter.h",
+              "RelativeToolTip": "filter.h",
+              "ViewState": "AgIAALEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-01-18T16:21:51.817Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "filter.c",
+              "DocumentMoniker": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\filter.c",
+              "RelativeDocumentMoniker": "filter.c",
+              "ToolTip": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\filter.c",
+              "RelativeToolTip": "filter.c",
+              "ViewState": "AgIAAIYFAAAAAAAAAAAIwJwFAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-01-18T16:20:54.274Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "device.c",
+              "DocumentMoniker": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\device.c",
+              "RelativeDocumentMoniker": "device.c",
+              "ToolTip": "C:\\Users\\mariu\\Desktop\\git reps\\Reengineered-Lan\\assets\\NICdrivers\\Windows_ndislwf1\\device.c",
+              "RelativeToolTip": "device.c",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-01-18T16:12:23.949Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
