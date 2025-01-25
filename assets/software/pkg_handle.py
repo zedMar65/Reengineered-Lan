@@ -1,8 +1,8 @@
 from scapy.all import IP, UDP, Raw, TCP#, sr1, send, sniff
 from errors import raiseError
-from interface import sr1, send, sniff
+from interface import sr1, sendp, sniff
 
-def form_udp(
+def fs_udp(
     src_port: int,
     dst_port: int,
     src_ip: str,
@@ -16,14 +16,13 @@ def form_udp(
     frag: int = 0,
     proto: int = 17,
     id: int = 1,
-) -> bytes:
-    # No IP options passed, just set to None
+):
     try:
         packet = IP(src=src_ip, dst=dst_ip, ttl=ttl, ihl=ihl, version=version, tos=tos, flags=flags, frag=frag, proto=proto, id=id) / \
                  UDP(sport=src_port, dport=dst_port) / \
                  Raw(data)
         packet.build()  # Build the packet
-        return packet  # Return the raw bytes of the packet
+        sendp(packet)  # Send the packet
     except Exception as e:
         raiseError(2, e)
 # managing tcp sockets, Yai!
@@ -134,7 +133,7 @@ class tcp_session:
         self.seq = fin_response.ack
         self.ack = fin_response.seq + 1
         fin_ack_packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="A", seq=self.seq, ack=self.ack)
-        send(fin_ack_packet, iface=self.iface)
+        sendp(fin_ack_packet, iface=self.iface)
         self.is_active = False
         return 1
     """
@@ -142,7 +141,7 @@ class tcp_session:
     data: data to send
     return 1 if the data is sent successfully
     """
-    def send(self, data: str) -> int:
+    def sendp(self, data: str) -> int:
         if not self.is_active:
             return 0
         packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="PA", seq=self.seq, ack=self.ack) / Raw(data)
@@ -170,7 +169,6 @@ class tcp_session:
         self._acknoladge()
         return packet[Raw].load.decode()
     # private functions
-    # packet filter
     """
     Filter packets
     pkt: packet to filter
@@ -207,7 +205,7 @@ class tcp_session:
     def _acknoladge(self) -> int:
         try:
             ack_packet = IP(src=self.src_ip, dst=self.dst_ip) / TCP(sport=self.src_port, dport=self.dst_port, flags="A", seq=self.seq, ack=self.ack)
-            send(ack_packet, iface=self.iface)
+            sendp(ack_packet, iface=self.iface)
         except Exception as e:
             raiseError(4, e)
         return 1

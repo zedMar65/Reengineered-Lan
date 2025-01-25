@@ -1,5 +1,3 @@
-import curses, os, platform
-
 lain_IMG = (
 "⠀⠀⠀⠀⠀⠀⠀⠄⣀⠢⢀⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⡔⢀⠂⡜⢭⢻⣍⢯⡻⣝⣿⣿⡿⣟⠂\n",
 "⠀⠀⠀⠀⠀⠀⠀⠄⠀⣦⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡔⡀⢂⠜⣪⢗⡾⣶⡽⣾⣟⣯⠛⠀⠀\n",
@@ -36,58 +34,46 @@ lain_IMG = (
 "⣇⢾⡱⠞⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⡇⠀⠀⠀⠉⠛⠳⠿⣶⣽⣿⣿⣿⣿⣿⣿⣿⣿\n",
 )
 
-def display_img(stdscr, img, y, x):
-    for i, line in enumerate(img):
-        stdscr.addstr(y + i, x, line)
-
-def main(stdscr):
-    startup(stdscr)
-    fps = 10
-    while (code := main_loop(stdscr)) != ord("q"):
-        stdscr.refresh()
-        curses.napms(int(1000 / fps))
-    # finish and close curses
-    curses.nocbreak()
-    stdscr.keypad(False)
-    curses.echo()
-    curses.endwin()
-def startup(stdscr):
-    """Setup initial terminal configurations."""
-    curses.curs_set(0)
-    curses.noecho()
-    stdscr.keypad(True)
-    stdscr.timeout(0)
-    curses.start_color()
-    curses.use_default_colors()
-    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+from blessed import Terminal
+import time
 
 
-def main_loop(stdscr):
-    """Main logic to draw the custom border and handle user input."""
-    height, width = stdscr.getmaxyx()
-    print("Re-lan gui")
+def main() -> None:
+    term = setup()
+    main_loop(term)
 
-    
-    stdscr.clear()
+def main_loop(term) -> int:
+    # display height and width in the center of the screen
+    fps = 30  # Set the refresh rate/fps
 
-    # Draw the custom border
-    stdscr.attron(curses.color_pair(1))
-    stdscr.addstr(0, 3, "_" * (width - 6))
-    stdscr.addch(1, 2, "/")
-    stdscr.addch(1, width - 3, "\\")
-    for y in range(2, height - 1):
-        stdscr.addch(y, 1, "(")
-        stdscr.addch(y, width - 2, ")")
-    stdscr.addch(height - 1, 2, "\\")
-    stdscr.addch(height - 1, width - 3, "/")
-    stdscr.addstr(height - 1, 3, "_" * (width - 6))
+    while True:
+        start_time = time.time()
+        
+        # Prepare the updated content
+        width = term.width
+        height = term.height
+        content = term.move_yx(height // 2, width // 2) + f"Width: {width} Height: {height}"
 
-    stdscr.attroff(curses.color_pair(1))
+        # Draw only the updated content
+        print(term.clear+content, end="", flush=True)
 
-    # Draw text inside the border
-    stdscr.addstr(height // 2, width // 2 - 15, "Hello, this is inside a custom border!")
+        with term.cbreak():
+            val = term.inkey(timeout=1 / fps)
+            if val == "q":
+                break
+        
+        elapsed_time = time.time() - start_time
+        time.sleep(max(0, (1 / fps) - elapsed_time))
 
-    return stdscr.getch()
+
+
+
+def setup() -> Terminal:
+    term = Terminal()
+    print(term.clear)
+    print(term.home)
+    return term
+
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+    main()

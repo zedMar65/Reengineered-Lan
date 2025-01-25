@@ -1,2 +1,2 @@
 # Explanation
-Since I have not yet started writing drivers for Windows or Linux, the testing and release will be done via a UART connection, as NIC drivers filter packets that do not follow the OSI model (and excluding the MAC, obviously, do not do so).
+Since I have not yet started writing drivers for Windows or Linux, testing and release will be conducted via a UART connection. This is because NIC drivers filter packets that do not follow the OSI model (excluding the MAC, of course).

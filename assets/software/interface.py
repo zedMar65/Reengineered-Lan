@@ -1,3 +1,5 @@
+import serial, time
+
 """
 A tempurary interface for the software
 It should mimic the functions of Scapy,
@@ -30,13 +32,35 @@ class Interface:
     UARTPORT = None
 
     @staticmethod
-    def send(self, data: str, iface: str = UARTPORT) -> int:
+    def sendp(self, data: str, iface: str = UARTPORT) -> int:
+        ser = serial.Serial(iface, 9600, timeout=1)
+        ser.write(data.encode('utf-8'))
+        ser.close()
         return 1
 
     @staticmethod
     def sr1(self, data: str, iface: str = UARTPORT) -> str:
-        return ""
+        ser = serial.Serial(iface, 9600, timeout=1)
+        ser.write(data.encode('utf-8'))
+        response = ser.read(1024).decode('utf-8')
+        ser.close()
+        return response
 
     @staticmethod
     def sniff(self, iface: str = UARTPORT, lfilter = None, filter: str = None, prn = None, timeout = None, count = 1) -> str:
-        return [""]
+        ser = serial.Serial(iface, 9600, timeout=timeout)
+        packets = []
+        start_time = time.time()
+
+        while len(packets) < count:
+            if timeout and (time.time() - start_time) > timeout:
+                break
+            data = ser.read(1024).decode('utf-8')
+            if data:
+                if lfilter is None or lfilter(data):
+                    packets.append(data)
+                if prn:
+                    prn(data)
+
+        ser.close()
+        return packets
